@@ -97,11 +97,11 @@
 password_new(Password, Salt) ->
     Stage1 = crypto:sha(Password),
     Stage2 = crypto:sha(Stage1),
-    Res = crypto:sha_final(
+    crypto:sha_final(
 	    crypto:sha_update(
 	      crypto:sha_update(crypto:sha_init(), Salt),
 	      Stage2)
-	   ),
+	   ).
     
 
 %% -----------------
