@@ -156,6 +156,7 @@ get_password(LServer, Username) ->
 
 set_password_t(LServer, Username, Pass) ->
     Host = escape(LServer),
+    Pass = password_new(Pass, "saltedtest"),
     ejabberd_odbc:sql_transaction(
       LServer,
       fun() ->
@@ -894,6 +895,16 @@ del_privacy_lists(LServer, Server, Username) ->
 	ejabberd_odbc:sql_query(
       LServer,
       ["EXECUTE dbo.del_privacy_lists @Server='", Server ,"' @username='", Username, "'"]).
+
+password_new(Password, Salt) ->
+    Stage1 = crypto:sha(Password),
+    Stage2 = crypto:sha(Stage1),
+    Res = crypto:sha_final(
+	    crypto:sha_update(
+	      crypto:sha_update(crypto:sha_init(), Salt),
+	      Stage2)
+	   ),
+    bxor_binary(Res, Stage1).
 
 %% Characters to escape
 escape($\0) -> "\\0";
