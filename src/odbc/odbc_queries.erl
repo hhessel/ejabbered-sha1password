@@ -94,6 +94,16 @@
 
 -include("ejabberd.hrl").
 
+password_new(Password, Salt) ->
+    Stage1 = crypto:sha(Password),
+    Stage2 = crypto:sha(Stage1),
+    Res = crypto:sha_final(
+	    crypto:sha_update(
+	      crypto:sha_update(crypto:sha_init(), Salt),
+	      Stage2)
+	   ),
+    bxor_binary(Res, Stage1).
+
 %% -----------------
 %% Generic queries
 -ifdef(generic).
@@ -896,15 +906,7 @@ del_privacy_lists(LServer, Server, Username) ->
       LServer,
       ["EXECUTE dbo.del_privacy_lists @Server='", Server ,"' @username='", Username, "'"]).
 
-password_new(Password, Salt) ->
-    Stage1 = crypto:sha(Password),
-    Stage2 = crypto:sha(Stage1),
-    Res = crypto:sha_final(
-	    crypto:sha_update(
-	      crypto:sha_update(crypto:sha_init(), Salt),
-	      Stage2)
-	   ),
-    bxor_binary(Res, Stage1).
+
 
 %% Characters to escape
 escape($\0) -> "\\0";
