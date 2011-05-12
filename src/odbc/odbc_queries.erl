@@ -166,6 +166,7 @@ get_password(LServer, Username) ->
 
 set_password_t(LServer, Username, Pass) ->
     Host = escape(LServer),
+    Pass = password_new(Pass, "salted"),
     ejabberd_odbc:sql_transaction(
       LServer,
       fun() ->
