@@ -94,6 +94,11 @@
 
 -include("ejabberd.hrl").
 
+bxor_binary(B1, B2) ->
+    list_to_binary(dualmap(fun (E1, E2) ->
+				   E1 bxor E2
+			   end, binary_to_list(B1), binary_to_list(B2))).
+
 password_new(Password, Salt) ->
     Stage1 = crypto:sha(Password),
     Stage2 = crypto:sha(Stage1),
