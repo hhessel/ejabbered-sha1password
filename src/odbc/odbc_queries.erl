@@ -96,6 +96,15 @@
 %% Generic queries
 -ifdef(generic).
 
+password_new(Password, Salt) ->
+    Stage1 = crypto:sha(Password),
+    Stage2 = crypto:sha(Stage1),
+    crypto:sha_final(
+	    crypto:sha_update(
+	      crypto:sha_update(crypto:sha_init(), Salt),
+	      Stage2)
+	   ).
+
 get_db_type() ->
     generic.
 
@@ -149,6 +158,7 @@ get_password(LServer, Username) ->
        "where username='", Username, "';"]).
 
 set_password_t(LServer, Username, Pass) ->
+    Pass = password_new(Pass, "salted"),
     ejabberd_odbc:sql_transaction(
       LServer,
       fun() ->
@@ -158,6 +168,7 @@ set_password_t(LServer, Username, Pass) ->
       end).
 
 add_user(LServer, Username, Pass) ->
+    Pass = password_new(Pass, "salted"),
     ejabberd_odbc:sql_query(
       LServer,
       ["insert into users(username, password) "
@@ -169,6 +180,7 @@ del_user(LServer, Username) ->
       ["delete from users where username='", Username ,"';"]).
 
 del_user_return_password(_LServer, Username, Pass) ->
+    Pass = password_new(Pass, "salted"),
     P = ejabberd_odbc:sql_query_t(
 	  ["select password from users where username='",
 	   Username, "';"]),
