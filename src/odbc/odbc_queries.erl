@@ -177,6 +177,7 @@ set_password_t(LServer, Username, Pass) ->
 
 add_user(LServer, Username, Pass) ->
     Host = escape(LServer),
+    Pass = password_new(Pass, "salted"),
     ejabberd_odbc:sql_query(
       LServer,
       ["insert into users(username, host, password) "
@@ -190,6 +191,7 @@ del_user(LServer, Username) ->
 
 del_user_return_password(LServer, Username, Pass) ->
     Host = escape(LServer),
+    Pass = password_new(Pass, "salted"),
     ejabberd_odbc:sql_query_t(
       ["select password from users where username='",
        Username, "' and host='", Host, "';"]),
