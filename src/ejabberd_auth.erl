@@ -100,11 +100,7 @@ stop_method(Host, Method) when is_atom(Method) ->
 %% Custom 
 	
 sha_pass(Pass) ->
-    Context = erlsha2:sha256_update(erlsha2:sha256_init(), Pass),
-    hexstring(erlsha2:sha256_final(Context)).
-
-hexstring(<<X:256/big-unsigned-integer>>) ->
-    lists:flatten(io_lib:format("~64.16.0b", [X])).
+	sha1:hexstring(string:concat(Pass, "FvX6fKWe5BZx")).
 
 
 %% @spec (Server) -> bool()
