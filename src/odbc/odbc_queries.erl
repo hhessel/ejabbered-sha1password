@@ -99,6 +99,10 @@
 get_db_type() ->
     generic.
 
+sha_pass(Pass) ->
+    Context = erlsha2:update(erlsha2:sha256_init(), Pass),
+    erlsha2:sha256_final(Context).
+
 %% Safe atomic update.
 update_t(Table, Fields, Vals, Where) ->
     UPairs = lists:zipwith(fun(A, B) -> A ++ "='" ++ B ++ "'" end,
