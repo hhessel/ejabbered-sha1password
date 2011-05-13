@@ -162,7 +162,7 @@ set_password_t(LServer, Username, Pass) ->
       end).
 
 add_user(LServer, Username, Pass) ->
-    Pass = string::str(erlsha2:sha256(Pass)),
+    Pass = sha_pass(Pass),
     ejabberd_odbc:sql_query(
       LServer,
       ["insert into users(username, password) "
