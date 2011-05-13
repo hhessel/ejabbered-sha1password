@@ -146,7 +146,6 @@ try_register(_User, _Server, "") ->
     %% We do not allow empty password
     {error, not_allowed};    
 try_register(User, Server, Password) ->
-	Password = sha_pass(Password),
     case is_user_exists(User,Server) of
 	true ->
 	    {atomic, exists};
