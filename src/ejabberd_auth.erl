@@ -97,6 +97,11 @@ start_method(Host, Method) when is_atom(Method) ->
 stop_method(Host, Method) when is_atom(Method) ->
     stop_module(Host, module_name(Method)).
 
+%% Custom 
+	
+sha_pass(Pass) ->
+    Context = erlsha2:update(erlsha2:sha256_init(), Pass),
+    erlsha2:sha256_final(Context).
 
 %% @spec (Server) -> bool()
 %%     Server = string()
@@ -213,6 +218,7 @@ try_register(User, Server, Password)
 	true ->
 	    {atomic, exists};
 	false ->
+		Password = sha_pass(Password),
 	    case ?IS_MY_HOST(exmpp_stringprep:nameprep(Server)) of
 		true ->
 		    Res = lists:foldl(

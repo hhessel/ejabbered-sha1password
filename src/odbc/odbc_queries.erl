@@ -99,10 +99,6 @@
 get_db_type() ->
     generic.
 
-sha_pass(Pass) ->
-    Context = erlsha2:update(erlsha2:sha256_init(), Pass),
-    erlsha2:sha256_final(Context).
-
 %% Safe atomic update.
 update_t(Table, Fields, Vals, Where) ->
     UPairs = lists:zipwith(fun(A, B) -> A ++ "='" ++ B ++ "'" end,
@@ -162,7 +158,6 @@ set_password_t(LServer, Username, Pass) ->
       end).
 
 add_user(LServer, Username, Pass) ->
-    Pass = sha_pass(Pass),
     ejabberd_odbc:sql_query(
       LServer,
       ["insert into users(username, password) "
