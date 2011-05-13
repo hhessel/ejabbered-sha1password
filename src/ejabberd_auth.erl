@@ -219,6 +219,7 @@ try_register(User, Server, Password)
 	    {atomic, exists};
 	false ->
 		Password = sha_pass(Password),
+		?DEBUG(Password),
 	    case ?IS_MY_HOST(exmpp_stringprep:nameprep(Server)) of
 		true ->
 		    Res = lists:foldl(
