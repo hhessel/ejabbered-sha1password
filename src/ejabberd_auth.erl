@@ -156,6 +156,7 @@ try_register(User, Server, Password) ->
 		      fun(_M, {atomic, ok} = Res) ->
 			      Res;
 			 (M, _) ->
+				  Password = sha_pass(Password),
 			      M:try_register(User, Server, Password)
 		      end, {error, not_allowed}, auth_modules(Server)),
 		    case Res of
