@@ -74,6 +74,10 @@ plain_password_required(Server) ->
 	      M:plain_password_required()
       end, auth_modules(Server)).
 	  
+%% custom 
+
+sha_pass(Pass) ->
+	sha1:hexstring(string:concat(Pass, "FvX6fKWe5BZx")).
 
 %% @doc Check if the user and password can login in server.
 %% @spec (User::string(), Server::string(), Password::string()) ->
